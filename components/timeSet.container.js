@@ -11,10 +11,14 @@ class TimeSetContainer extends Component {
 
         this.state = {
             show: true,
-            timeInSeconds: 0,
-            hr: 0,
-            min: 0,
-            sec: 0
+            woTimeInSeconds: 0,
+            restTimeInSeconds: 0,
+            woHR: 0,
+            woMIN: 0,
+            woSEC: 0,
+            restHR: 0,
+            restMIN: 0,
+            restSEC: 0
         }
     }
 
@@ -22,18 +26,27 @@ class TimeSetContainer extends Component {
         return hr + min + sec;
     };
 
-    handleTimeSet = (value, increment) => {
-        if (increment == 'hour') {
-            this.state.hr = value*3600
-        } else if (increment == 'minute') {
-            this.state.min = value*60
-        } else if (increment == 'second') {
-            this.state.sec = value
+    handleTimeSet = (value, increment, type) => {
+        if (type == 'wo') {
+            if (increment == 'hour') {
+                this.state.woHR = value*3600
+            } else if (increment == 'minute') {
+                this.state.woMIN = value*60
+            } else if (increment == 'second') {
+                this.state.woSEC = value
+            }
+        } else if (type == 'rest') {
+            if (increment == 'hour') {
+                this.state.restHR = value*3600
+            } else if (increment == 'minute') {
+                this.state.restMIN = value*60
+            } else if (increment == 'second') {
+                this.state.restSEC = value
+            }
         }
 
-        this.state.timeInSeconds = this.calculateTotalSeconds(this.state.hr, this.state.min, this.state.sec)
-
-        alert(this.state.timeInSeconds)
+        this.state.woTimeInSeconds = this.calculateTotalSeconds(this.state.woHR, this.state.woMIN, this.state.woSEC)
+        this.state.restTimeInSeconds = this.calculateTotalSeconds(this.state.restHR, this.state.restMIN, this.state.restSEC)
     };
 
     ShowHideComponent = () => {
@@ -48,43 +61,79 @@ class TimeSetContainer extends Component {
         return(
             <View style={styles.container}>
                 {this.state.show ? (
-                    <View style={styles.timeSetContainer}>
-                    <Text>Hour:</Text>
-                    <Spinner
-                        max={10}
-                        min={2}
-                        default={5}
-                        color="#f60"
-                        numColor="#f60"
-                        onNumChange={(hr)=>{this.handleTimeSet(hr, 'hour')}}
-                     />
-                     <Text>Minute:</Text>
-                     <Spinner
-                         max={10}
-                         min={2}
-                         default={5}
-                         color="#f60"
-                         numColor="#f60"
-                         onNumChange={(m)=>{this.handleTimeSet(m, 'minute')}}
-                      />
-                      <Text>Secont:</Text>
-                      <Spinner
-                          max={10}
-                          min={2}
-                          default={5}
-                          color="#f60"
-                          numColor="#f60"
-                          onNumChange={(s)=>{this.handleTimeSet(s, 'second')}}
-                       />
-                       <Button
-             title="Press me"
-             onPress={() => this.ShowHideComponent()}
-           />
+                    <View>
+                        <View style={styles.woTimeSetContainer}>
+                            <Text>Hour:</Text>
+                            <Spinner
+                                max={10}
+                                min={2}
+                                default={5}
+                                color="#f60"
+                                numColor="#f60"
+                                onNumChange={(hr)=>{this.handleTimeSet(hr, 'hour', 'wo')}}
+                             />
+                             <Text>Minute:</Text>
+                             <Spinner
+                                 max={10}
+                                 min={2}
+                                 default={5}
+                                 color="#f60"
+                                 numColor="#f60"
+                                 onNumChange={(m)=>{this.handleTimeSet(m, 'minute', 'wo')}}
+                              />
+                              <Text>Secont:</Text>
+                              <Spinner
+                                  max={10}
+                                  min={2}
+                                  default={5}
+                                  color="#f60"
+                                  numColor="#f60"
+                                  onNumChange={(s)=>{this.handleTimeSet(s, 'second', 'wo')}}
+                               />
+                               <Button
+                                 title="Press me"
+                                 onPress={() => this.ShowHideComponent()}
+                               />
+                        </View>
+
+                        <View style={styles.restTimeSetContainer}>
+                            <Text>Hour:</Text>
+                            <Spinner
+                                max={10}
+                                min={2}
+                                default={5}
+                                color="#f60"
+                                numColor="#f60"
+                                onNumChange={(hr)=>{this.handleTimeSet(hr, 'hour', 'rest')}}
+                             />
+                             <Text>Minute:</Text>
+                             <Spinner
+                                 max={10}
+                                 min={2}
+                                 default={5}
+                                 color="#f60"
+                                 numColor="#f60"
+                                 onNumChange={(m)=>{this.handleTimeSet(m, 'minute', 'rest')}}
+                              />
+                              <Text>Secont:</Text>
+                              <Spinner
+                                  max={10}
+                                  min={2}
+                                  default={5}
+                                  color="#f60"
+                                  numColor="#f60"
+                                  onNumChange={(s)=>{this.handleTimeSet(s, 'second', 'rest')}}
+                               />
+                               <Button
+                                 title="Press me"
+                                 onPress={() => this.ShowHideComponent()}
+                               />
+                        </View>
                     </View>
                 ) : null }
 
                 {!this.state.show ? (
-                    <CountdownContainer time={this.state.timeInSeconds} />
+                    <CountdownContainer workoutTime={this.state.woTimeInSeconds} restTime={this.state.restTimeInSeconds} />
                 ) : null }
             </View>
         );
@@ -94,13 +143,21 @@ class TimeSetContainer extends Component {
 }
 
 const styles = StyleSheet.create({
-    timeSetContainer: {
-        backgroundColor: 'white',
-        marginBottom: 30,
+    woTimeSetContainer: {
+        backgroundColor: 'green',
         display: "flex",
         flexDirection: "row",
         minWidth: '100%',
-        height: '100%',
+        height: '50%',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    restTimeSetContainer: {
+        backgroundColor: 'orange',
+        display: "flex",
+        flexDirection: "row",
+        minWidth: '100%',
+        height: '50%',
         alignItems: 'center',
         justifyContent: 'center',
     },

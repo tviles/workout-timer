@@ -1,5 +1,5 @@
 import  React, {Component} from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Button } from 'react-native';
 
 import CountDown from 'react-native-countdown-component';
 import TimeSetContainer from "./timeSet.container";
@@ -10,23 +10,56 @@ class CountdownContainer extends Component {
         super(props);
 
         this.state = {
+            workoutTime: this.props.workoutTime,
+            restTime: this.props.restTime,
+            timer: this.props.workoutTime,
+            running: true,
+            backgroundColor: 'green',
             hr: 0,
             min: 0,
             sec: 0
         }
     }
 
-    handleTimeSet = () => {
+    resetTimer = () => {
+        this.setState (
+            {
+                time: this.state.time
+            }
+        );
+    };
 
+    stopTimer = () => {
+        this.setState (
+            {
+                running: false
+            }
+        );
+    };
+
+    toggleRest = () => {
+        if (this.state.restTime != 0) {
+            this.setState (
+                {
+                    timer: this.state.restTime,
+                    backgroundColor: 'orange'
+                }
+            );
+        } else {
+            this.setState ({
+                backgroundColor: 'red'
+            })
+        }
     };
 
     render() {
         return(
-            <View style={styles.container}>
+            <View style={styles.container, {backgroundColor: this.state.backgroundColor}}>
                 <View style={styles.countdownContainer}>
                 <CountDown
-                    until={this.props.time}
-                    // onFinish={() => alert('finished')}
+                    until={this.state.timer}
+                    running={this.state.running}
+                    onFinish={() => this.toggleRest()}
                     size={50}
                     digitStyle={{backgroundColor: null}}
                     digitTxtStyle={{color: '#fff'}}
@@ -34,7 +67,16 @@ class CountdownContainer extends Component {
                     timeLabels={{h: null, m: null, s: null}}
                   />
                 </View>
-
+                <View style={styles.actionButtons}>
+                    <Button
+                      title="Reset"
+                      onPress={() => this.resetTimer()}
+                    />
+                    <Button
+                        title="Stop"
+                        onPress={() => this.stopTimer()}
+                    />
+                </View>
             </View>
         );
     }
@@ -44,21 +86,24 @@ class CountdownContainer extends Component {
 
 const styles = StyleSheet.create({
     countdownContainer: {
-        backgroundColor: 'green',
         borderBottomColor: 'white',
         borderBottomWidth: 1,
         display: "flex",
         flexDirection: "row",
         minWidth: '100%',
-        height: '50%',
+        height: '90%',
         alignItems: 'center',
         paddingTop: 150,
         paddingBottom: 150,
         justifyContent: 'center',
     },
 
-    numbersParent: {
-
+    actionButtons: {
+        flex: 1,
+        display: 'flex',
+        backgroundColor: 'black',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
     }
 
 
